@@ -52,13 +52,16 @@ def dissect_readme(filename):
         elif token.type == 'heading_close':
             heading = False
         elif token.type == 'inline' and heading:
+            print("LEVEL:", header_level)
+            print("PREV:", prev_header_level)
             if header_level == 1:
                 directory = GoogleTranslator(source='zh-CN', target='en').translate(token.content)
             elif header_level > prev_header_level:
                 directory += "/"+GoogleTranslator(source='zh-CN', target='en').translate(token.content)
             else:
                 arr = directory.split("/")
-                arr[-1] = GoogleTranslator(source='zh-CN', target='en').translate(token.content)
+                arr[header_level-1] = GoogleTranslator(source='zh-CN', target='en').translate(token.content)
+                arr = arr[0:header_level]
                 directory = "/".join(arr)
             prev_header_level = header_level
             heading_text = GoogleTranslator(source='zh-CN', target='en').translate(token.content)
